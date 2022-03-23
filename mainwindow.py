@@ -1,4 +1,4 @@
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt6 import QtCore, QtGui, QtWidgets
 
 
 class Ui_MainWindow(object):
@@ -9,17 +9,18 @@ class Ui_MainWindow(object):
         self.centralwidget.setObjectName("centralwidget")
         self.additem_lineEdit = QtWidgets.QLineEdit(self.centralwidget)
         self.additem_lineEdit.setGeometry(QtCore.QRect(10, 220, 571, 31))
+        self.additem_lineEdit.setText("")
         self.additem_lineEdit.setObjectName("additem_lineEdit")
         self.my_listWidget = QtWidgets.QListWidget(self.centralwidget)
         self.my_listWidget.setGeometry(QtCore.QRect(10, 10, 571, 201))
         self.my_listWidget.setObjectName("my_listWidget")
-        self.ClearAllButton = QtWidgets.QPushButton(self.centralwidget, clicked=lambda: self.clearItem())
+        self.ClearAllButton = QtWidgets.QPushButton(self.centralwidget, clicked=lambda:self.clearItem())
         self.ClearAllButton.setGeometry(QtCore.QRect(590, 180, 111, 31))
         self.ClearAllButton.setObjectName("ClearAllButton")
-        self.RemoveItemButton = QtWidgets.QPushButton(self.centralwidget, clicked=lambda: self.removeItem())
+        self.RemoveItemButton = QtWidgets.QPushButton(self.centralwidget, clicked=lambda:self.removeItem())
         self.RemoveItemButton.setGeometry(QtCore.QRect(590, 90, 111, 31))
         self.RemoveItemButton.setObjectName("RemoveItemButton")
-        self.AddItemButton = QtWidgets.QPushButton(self.centralwidget, clicked=lambda: self.appendItem())
+        self.AddItemButton = QtWidgets.QPushButton(self.centralwidget, clicked=lambda:self.appendItem())
         self.AddItemButton.setGeometry(QtCore.QRect(590, 10, 111, 31))
         self.AddItemButton.setObjectName("AddItemButton")
         MainWindow.setCentralWidget(self.centralwidget)
@@ -37,13 +38,14 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "To-Do List App"))
+        self.additem_lineEdit.setPlaceholderText(_translate("MainWindow", "add list item here."))
         self.ClearAllButton.setText(_translate("MainWindow", "Clear Button"))
         self.RemoveItemButton.setText(_translate("MainWindow", "Remove Item"))
         self.AddItemButton.setText(_translate("MainWindow", "Add Item"))
 
     def appendItem(self):
-        item=self.additem_lineEdit.text()
-        self.my_listWidget.addItem(item)
+        text=self.additem_lineEdit.text()
+        self.my_listWidget.addItem(text)
         self.additem_lineEdit.clear()
 
     def removeItem(self):
@@ -60,4 +62,4 @@ if __name__ == "__main__":
     ui = Ui_MainWindow()
     ui.setupUi(MainWindow)
     MainWindow.show()
-    sys.exit(app.exec_())
+    sys.exit(app.exec())
