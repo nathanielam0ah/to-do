@@ -1,4 +1,4 @@
-from PyQt6 import QtCore, QtGui, QtWidgets
+from PyQt5 import QtCore, QtGui, QtWidgets
 
 
 class Ui_MainWindow(object):
@@ -14,11 +14,14 @@ class Ui_MainWindow(object):
         self.my_listWidget = QtWidgets.QListWidget(self.centralwidget)
         self.my_listWidget.setGeometry(QtCore.QRect(10, 10, 571, 201))
         self.my_listWidget.setObjectName("my_listWidget")
+        self.EditButton = QtWidgets.QPushButton(self.centralwidget, clicked=lambda: self.editItem())
+        self.EditButton.setGeometry(QtCore.QRect(590, 120, 111, 31))
+        self.EditButton.setObjectName("EditButton")
         self.ClearAllButton = QtWidgets.QPushButton(self.centralwidget, clicked=lambda:self.clearItem())
         self.ClearAllButton.setGeometry(QtCore.QRect(590, 180, 111, 31))
         self.ClearAllButton.setObjectName("ClearAllButton")
         self.RemoveItemButton = QtWidgets.QPushButton(self.centralwidget, clicked=lambda:self.removeItem())
-        self.RemoveItemButton.setGeometry(QtCore.QRect(590, 90, 111, 31))
+        self.RemoveItemButton.setGeometry(QtCore.QRect(590, 60, 111, 31))
         self.RemoveItemButton.setObjectName("RemoveItemButton")
         self.AddItemButton = QtWidgets.QPushButton(self.centralwidget, clicked=lambda:self.appendItem())
         self.AddItemButton.setGeometry(QtCore.QRect(590, 10, 111, 31))
@@ -42,11 +45,23 @@ class Ui_MainWindow(object):
         self.ClearAllButton.setText(_translate("MainWindow", "Clear Button"))
         self.RemoveItemButton.setText(_translate("MainWindow", "Remove Item"))
         self.AddItemButton.setText(_translate("MainWindow", "Add Item"))
+        self.EditButton.setText(_translate("MainWindow","Edit Item"))
 
     def appendItem(self):
         text=self.additem_lineEdit.text()
         self.my_listWidget.addItem(text)
         self.additem_lineEdit.clear()
+
+    def editItem(self):
+        for index in range(self.my_listWidget.count()):
+            item=self.my_listWidget.item(index)
+            item.setFlags(item.flags() | QtCore.Qt.ItemIsEditable)
+        selectedObject=self.my_listWidget.currentIndex()
+        if selectedObject.isValid():
+            item=self.my_listWidget.itemFromIndex(selectedObject)
+            if not item.isSelected():
+                item.setSelected(True)
+        self.my_listWidget.edit(selectedObject)
 
     def removeItem(self):
         selectedObject=self.my_listWidget.currentRow()
