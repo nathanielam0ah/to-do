@@ -39,6 +39,9 @@
       <height>201</height>
      </rect>
     </property>
+    <property name="dragEnabled">
+     <bool>false</bool>
+    </property>
    </widget>
    <widget class="QPushButton" name="ClearAllButton">
     <property name="geometry">
@@ -50,20 +53,20 @@
      </rect>
     </property>
     <property name="text">
-     <string>Clear Button</string>
+     <string>Clear</string>
     </property>
    </widget>
    <widget class="QPushButton" name="RemoveItemButton">
     <property name="geometry">
      <rect>
       <x>590</x>
-      <y>90</y>
+      <y>120</y>
       <width>111</width>
       <height>31</height>
      </rect>
     </property>
     <property name="text">
-     <string>Remove Item</string>
+     <string>Remove</string>
     </property>
    </widget>
    <widget class="QPushButton" name="AddItemButton">
@@ -76,7 +79,20 @@
      </rect>
     </property>
     <property name="text">
-     <string>Add Item</string>
+     <string>Add</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton">
+    <property name="geometry">
+     <rect>
+      <x>590</x>
+      <y>60</y>
+      <width>111</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Edit</string>
     </property>
    </widget>
   </widget>
