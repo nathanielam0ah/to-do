@@ -16,17 +16,17 @@ class Ui_MainWindow(object):
         MainWindow.resize(707, 295)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
-        self.additem_lineEdit = QtWidgets.QLineEdit(self.centralwidget)
+        '''self.additem_lineEdit = QtWidgets.QLineEdit(self.centralwidget)
         self.additem_lineEdit.setGeometry(QtCore.QRect(10, 220, 571, 31))
         self.additem_lineEdit.setText("")
-        self.additem_lineEdit.setObjectName("additem_lineEdit")
+        self.additem_lineEdit.setObjectName("additem_lineEdit")'''
         self.my_listWidget = QtWidgets.QListWidget(self.centralwidget)
-        self.my_listWidget.setGeometry(QtCore.QRect(10, 10, 571, 201))
+        self.my_listWidget.setGeometry(QtCore.QRect(5, 50, 571, 220))
         self.my_listWidget.setObjectName("my_listWidget")
         self.my_listWidget.itemDoubleClicked.connect(self._handleDoubleClickedEvent)
-        '''self.EditButton = QtWidgets.QPushButton(self.centralwidget, clicked=lambda: self.editItem())
-        self.EditButton.setGeometry(QtCore.QRect(590, 60, 111, 31))
-        self.EditButton.setObjectName("EditButton")'''
+        self.SaveButton = QtWidgets.QPushButton(self.centralwidget, clicked=lambda: self._saveAll())
+        self.SaveButton.setGeometry(QtCore.QRect(590, 110, 111, 31))
+        self.SaveButton.setObjectName("SaveButton")
         self.ClearAllButton = QtWidgets.QPushButton(self.centralwidget, clicked=lambda:self.clearItem())
         self.ClearAllButton.setGeometry(QtCore.QRect(590, 180, 111, 31))
         self.ClearAllButton.setObjectName("ClearAllButton")
@@ -38,7 +38,7 @@ class Ui_MainWindow(object):
         self.AddItemButton.setObjectName("AddItemButton")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 707, 19))
+        self.menubar.setGeometry(QtCore.QRect(0, 100, 707, 19))
         self.menubar.setObjectName("menubar")
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
@@ -49,45 +49,32 @@ class Ui_MainWindow(object):
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         self.grabAll()
 
+
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "To-Do List App"))
-        self.additem_lineEdit.setPlaceholderText(_translate("MainWindow", "add list item here."))
+        #self.additem_lineEdit.setPlaceholderText(_translate("MainWindow", "add list item here."))
         self.ClearAllButton.setText(_translate("MainWindow", "Clear"))
         self.RemoveItemButton.setText(_translate("MainWindow", "Remove"))
         self.AddItemButton.setText(_translate("MainWindow", "Add"))
-        '''self.EditButton.setText(_translate("MainWindow","Edit"))'''
+        self.SaveButton.setText(_translate("MainWindow","Save"))
 
     def grabAll(self):
         connection = sqlite3.connect('todolist.db')
         crs = connection.cursor()
-        crs.execute("""SELECT * FROM todolist""")
+        crs.execute('SELECT * FROM todolist')
         records=crs.fetchall()
         connection.commit()
         crs.close()
         for record in records:
-            self.my_listWidget.addItem(str(record))
+            self.my_listWidget.addItem(str(record[0]))
 
     def appendItem(self):
-        connection = sqlite3.connect('todolist.db')
-        crs = connection.cursor()
-        crs.execute("""DELETE FROM todolist;""",)
-        itemList=[]
-        text=self.additem_lineEdit.text()
-        self.my_listWidget.addItem(text)
-        for index in range(self.my_listWidget.count()):
-            if index not in itemList:
-                itemList.append(self.my_listWidget.item(index))
-        self.additem_lineEdit.clear()
-        for item in itemList:
-            crs.execute("INSERT INTO todolist VALUES (:item)",
-                        {
-                            'item': item.text(),
-                        })
-        connection.commit()
-        crs.close()
+        #text=self.additem_lineEdit.text()
+        self.my_listWidget.addItem("")
+        #self.additem_lineEdit.clear()
 
-# this function has been replaced with the double click event
+    # this function has been replaced with the double click event
     ''' def editItem(self):
         for index in range(self.my_listWidget.count()):
             item=self.my_listWidget.item(index)
@@ -111,6 +98,27 @@ class Ui_MainWindow(object):
         item.setSelected(True)
         item.setFlags(item.flags() | QtCore.Qt.ItemIsEditable)
         item=self.my_listWidget.itemFromIndex(self.my_listWidget.currentIndex())
+
+    def _saveAll(self):
+        connection = sqlite3.connect('todolist.db')
+        crs = connection.cursor()
+        crs.execute('DELETE FROM todolist;',)
+        itemList=[]
+        for index in range(self.my_listWidget.count()):
+            if index not in itemList:
+                itemList.append(self.my_listWidget.item(index))
+        for item in itemList:
+            crs.execute("INSERT INTO todolist VALUES (:item)",
+                        {
+                            'item': item.text(),
+                        })
+        connection.commit()
+        crs.close()
+        _message=QtWidgets.QMessageBox()
+        _message.setWindowTitle("Sucess")
+        _message.setText("Save Successful")
+        _message.setIcon(QtWidgets.QMessageBox.Information)
+        _message.exec()
 
 
 if __name__ == "__main__":

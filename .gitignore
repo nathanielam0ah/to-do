@@ -4,3 +4,4 @@ dist
 venv
 mainwindow.spec
 mainwindow.ui
+todolist.db
