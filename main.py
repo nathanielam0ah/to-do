@@ -104,7 +104,7 @@ class Ui_MainWindow(object):
     def _saveAll(self):
         connection = sqlite3.connect('todolist.db')
         crs = connection.cursor()
-        #crs.execute('DELETE FROM todolist;',)
+        crs.execute('DELETE FROM todolist;',)
         itemList=[]
         for index in range(self.my_listWidget.count()):
             if index not in itemList:
