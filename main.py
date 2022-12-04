@@ -7,7 +7,9 @@ import os
 if (platform.system()=="Windows"):
     if (os.path.exists('C:/Users/amoah/AppData/Roaming/To-Do') == False):
         os.mkdir('C:/Users/amoah/AppData/Roaming/To-Do')
+        print("Save Path Created Successfully!")
     else:
+        print("Save Path Exists!")
         connection = sqlite3.connect('C:/Users/amoah/AppData/Roaming/To-Do/todolist.db')
         crs = connection.cursor()
         crs.execute("""CREATE TABLE if not exists todolist(
@@ -16,10 +18,12 @@ if (platform.system()=="Windows"):
         connection.commit()
         crs.close()
 else:
-    if (os.path.exists('~/.To-Do') == False):
-        os.mkdir('~/.To-Do')
+    if (os.path.exists(os.path.expanduser('~')+"/.To-Do") == False):
+        os.mkdir(os.path.expanduser('~')+"/.To-Do")
+        print("Save Path Created Successfully!")
     else:
-        connection = sqlite3.connect('~/.To-Do/todolist.db')
+        print("Save Path exists!")
+        connection = sqlite3.connect(os.path.expanduser('~')+"/.To-Do/todolist.db")
         crs = connection.cursor()
         crs.execute("""CREATE TABLE if not exists todolist(
                     listItem text
@@ -90,7 +94,7 @@ class Ui_MainWindow(object):
             for record in records:
                 self.my_listWidget.addItem(str(record[0]))
         else:
-            connection = sqlite3.connect('~/.To-Do/todolist.db')
+            connection = sqlite3.connect(os.path.expanduser('~')+"/.To-Do/todolist.db")
             crs = connection.cursor()
             crs.execute('SELECT * FROM todolist')
             records = crs.fetchall()
@@ -150,7 +154,7 @@ class Ui_MainWindow(object):
             _message.setText("Save Successful")
             _message.setIcon(QtWidgets.QMessageBox.Information)
             _message.exec()
-        else:connection = sqlite3.connect('~/.To-Do/todolist.db')
+        else:connection = sqlite3.connect(os.path.expanduser('~')+"/.To-Do/todolist.db")
         crs = connection.cursor()
         crs.execute('DELETE FROM todolist;',)
         itemList=[]
