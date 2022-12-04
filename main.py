@@ -1,14 +1,32 @@
 from PySide6 import QtCore, QtGui, QtWidgets
+from pathlib import Path
+import platform
 import sqlite3
-import sys
+import os
 
-connection=sqlite3.connect('todolist.db')
-crs=connection.cursor()
-crs.execute("""CREATE TABLE if not exists todolist(
-    listItem text
-)""")
-connection.commit()
-crs.close()
+if (platform.system()=="Windows"):
+    if (os.path.exists('C:/Users/amoah/AppData/Roaming/To-Do') == False):
+        os.mkdir('C:/Users/amoah/AppData/Roaming/To-Do')
+    else:
+        connection = sqlite3.connect('C:/Users/amoah/AppData/Roaming/To-Do/todolist.db')
+        crs = connection.cursor()
+        crs.execute("""CREATE TABLE if not exists todolist(
+            listItem text
+        )""")
+        connection.commit()
+        crs.close()
+else:
+    if (os.path.exists('~/.To-Do') == False):
+        os.mkdir('~/.To-Do')
+    else:
+        connection = sqlite3.connect('~/.To-Do/todolist.db')
+        crs = connection.cursor()
+        crs.execute("""CREATE TABLE if not exists todolist(
+                    listItem text
+                )""")
+        connection.commit()
+        crs.close()
+
 
 
 class Ui_MainWindow(object):
@@ -62,14 +80,24 @@ class Ui_MainWindow(object):
         self.SaveButton.setText(_translate("MainWindow","Save"))
 
     def grabAll(self):
-        connection = sqlite3.connect('todolist.db')
-        crs = connection.cursor()
-        crs.execute('SELECT * FROM todolist')
-        records=crs.fetchall()
-        connection.commit()
-        crs.close()
-        for record in records:
-            self.my_listWidget.addItem(str(record[0]))
+        if (platform.system() == "Windows"):
+            connection = sqlite3.connect('C:/Users/amoah/AppData/Roaming/To-Do/todolist.db')
+            crs = connection.cursor()
+            crs.execute('SELECT * FROM todolist')
+            records = crs.fetchall()
+            connection.commit()
+            crs.close()
+            for record in records:
+                self.my_listWidget.addItem(str(record[0]))
+        else:
+            connection = sqlite3.connect('~/.To-Do/todolist.db')
+            crs = connection.cursor()
+            crs.execute('SELECT * FROM todolist')
+            records = crs.fetchall()
+            connection.commit()
+            crs.close()
+            for record in records:
+                self.my_listWidget.addItem(str(record[0]))
 
     def appendItem(self):
         #text=self.additem_lineEdit.text()
@@ -102,7 +130,27 @@ class Ui_MainWindow(object):
         item=self.my_listWidget.itemFromIndex(self.my_listWidget.currentIndex())
 
     def _saveAll(self):
-        connection = sqlite3.connect('todolist.db')
+        if (platform.system() == "Windows"):
+            connection = sqlite3.connect('C:/Users/amoah/AppData/Roaming/To-Do/todolist.db')
+            crs = connection.cursor()
+            crs.execute('DELETE FROM todolist;', )
+            itemList = []
+            for index in range(self.my_listWidget.count()):
+                if index not in itemList:
+                    itemList.append(self.my_listWidget.item(index))
+            for item in itemList:
+                crs.execute("INSERT INTO todolist VALUES (:item)",
+                            {
+                                'item': item.text(),
+                            })
+            connection.commit()
+            crs.close()
+            _message = QtWidgets.QMessageBox()
+            _message.setWindowTitle("Success")
+            _message.setText("Save Successful")
+            _message.setIcon(QtWidgets.QMessageBox.Information)
+            _message.exec()
+        else:connection = sqlite3.connect('~/.To-Do/todolist.db')
         crs = connection.cursor()
         crs.execute('DELETE FROM todolist;',)
         itemList=[]
@@ -121,6 +169,7 @@ class Ui_MainWindow(object):
         _message.setText("Save Successful")
         _message.setIcon(QtWidgets.QMessageBox.Information)
         _message.exec()
+
 
 
 if __name__ == "__main__":
